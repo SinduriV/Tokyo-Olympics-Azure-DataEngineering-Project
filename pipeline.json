@@ -1,0 +1,98 @@
+{
+    "name": "copyGit_ADLS",
+    "properties": {
+        "activities": [
+            {
+                "name": "ForEach1",
+                "type": "ForEach",
+                "dependsOn": [],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@json('[\"Athletes.csv\", \"Coaches.csv\",\"EntriesGender.csv\",\"Medals.csv\",\"Teams.csv\"]')",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Copy data1",
+                            "type": "Copy",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "DelimitedTextSource",
+                                    "storeSettings": {
+                                        "type": "HttpReadSettings",
+                                        "requestMethod": "GET"
+                                    },
+                                    "formatSettings": {
+                                        "type": "DelimitedTextReadSettings"
+                                    },
+                                    "requestInterval": "00.00:01",
+                                    "requestMethod": "GET",
+                                    "paginationRules": {
+                                        "supportRFC5988": "true"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "DelimitedTextSink",
+                                    "storeSettings": {
+                                        "type": "AzureBlobFSWriteSettings"
+                                    },
+                                    "formatSettings": {
+                                        "type": "DelimitedTextWriteSettings",
+                                        "quoteAllText": true,
+                                        "fileExtension": ".csv"
+                                    }
+                                },
+                                "enableStaging": false,
+                                "translator": {
+                                    "type": "TabularTranslator",
+                                    "typeConversion": true,
+                                    "typeConversionSettings": {
+                                        "allowDataTruncation": true,
+                                        "treatBooleanAsNumber": false
+                                    }
+                                }
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "DelimitedText3",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "FileName": {
+                                            "value": "@item()",
+                                            "type": "Expression"
+                                        }
+                                    }
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "DelimitedText2",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "FileName": {
+                                            "value": "@item()",
+                                            "type": "Expression"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2025-02-09T04:08:37Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
